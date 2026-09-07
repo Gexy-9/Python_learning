@@ -1,0 +1,91 @@
+pip使用
+pip install 库名
+做数据分析：numpy、pandas
+画图：matplotlib
+爬虫：requests
+人工智能：torch、tensorflow
+
+# 查看pip版本（对应哪个Python）
+pip -V
+
+# 查看当前装了哪些库
+pip list
+
+# 升级pip本身
+python -m pip install --upgrade pip
+
+# 卸载某个库
+pip uninstall xxx
+
+命令：
+python 交互式环境 支持所有python基础语法 运行测试代码段 临时调用库 查看帮助查询属性
+ipython 交互式环境更好，更方便
+
+一、CMD 简单命令
+1. 查看 CPU 当前整体占用率
+cmd
+typeperf "\Processor(_Total)\% Processor Time"
+返回数字就是 CPU 使用率 %
+2. 查看总内存、空闲物理内存（单位 KB）
+cmd
+systeminfo | findstr "物理内存"
+3. 简略看整机内存信息
+cmd
+systeminfo | find "物理内存"
+4. 列出所有正在运行进程
+cmd
+tasklist
+5. 筛选占用内存超大的进程（大于 100MB）
+cmd
+tasklist /FI "MEMUSAGE gt 100000"
+6. 查看 C/D 盘剩余空间
+cmd
+dir C:\
+dir D:\
+7. 实时监控 CPU（滚动刷新，Ctrl+C 停止）
+cmd
+typeperf "\Processor(_Total)\% Processor Time"
+8.按程序名字关闭（最常用）
+格式：
+cmd
+taskkill /f /im 程序名.exe
+
+
+二、PowerShell 更强大、更直观（推荐）
+1. 一键查看总内存、可用内存（直接出 MB）
+powershell
+Get-Counter '\Memory\Available MBytes'
+2. 按 CPU 占用从高到低排序，揪出卡顿元凶
+powershell
+Get-Process | Sort-Object CPU -Descending | Select-Object Name,Id,CPU,WorkingSet64
+3. 按内存占用降序排序（最常用）
+powershell
+Get-Process | Sort-Object WorkingSet64 -Descending | Select Name,Id,@{Name="内存GB";Expression={[Math]::Round($_.WorkingSet64/1GB,2)}} -First 15
+作用：一眼看到哪个软件吃内存导致电脑卡（浏览器、IDE、虚拟机、微信居多）
+4. 查看磁盘读写队列（判断硬盘瓶颈，机械盘容易 100% 卡顿）
+powershell
+Get-Counter '\PhysicalDisk(_Total)\Avg. Disk Queue Length'
+数值持续 > 2 就是磁盘瓶颈，电脑会明显卡死。
+5. 一键查看 CPU 总负载百分比
+powershell
+(Get-Counter '\Processor(_Total)\% Processor Time').CounterSamples.CookedValue
+6. 强制结束卡死的进程（例如卡死的 python、浏览器）
+powershell
+Stop-Process -Name python -Force
+# 按PID结束（PID从上面Get-Process查到）
+Stop-Process -Id 1234 -Force
+
+
+三、判断电脑为什么卡顿
+CPU 持续 90% 以上：某个程序疯狂运算，结束对应进程即可
+可用内存＜1GB：内存被占满，系统疯狂读写虚拟硬盘，最典型卡顿
+磁盘队列长度长期偏高：机械硬盘性能不足，大量读写导致转圈卡死
+四、最快图形界面
+快捷键直接打开：
+Ctrl + Shift + Esc 打开任务管理器 → 性能
+看三项：CPU、内存、磁盘使用率，哪个拉满就是哪个拖慢电脑。
+
+PID = Process ID 进程编号
+
+
+
